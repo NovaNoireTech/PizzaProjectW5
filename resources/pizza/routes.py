@@ -1,46 +1,84 @@
 from flask import request
 from uuid import uuid4
+from flask.views import MethodView
 
-from app import app
+from schemas import PostSchema
+
 from db import users, pizza
+from . import bp
 
-@app.route("/")
+@bp.route('/<pizza_id>')
+class Pizza(MethodView):
+    @bp.response(200, PostSchema)
+    def get(self, pizza_id):
+        return {"message": "pizza added", "pizza": pizza}
 
-def pizzahome():
-    return users, 200
+    def pizza(self, pizza_id):
+        data= request.get_json()
+        print (data)
+        for d in data: 
+            pizza[d]= data[d]
+    @bp.arguements(PostSchema)
 
-@app.route("/", methods=["POST"]) 
+    def delete(self, pizza_id):
+        data= request.delete_json()
+        print (data)
+        for d in data:
+            pizza [d]=data[d]
 
-def createpizza():
-    data= request.get_json()
-    print (data)
-    for d in data: 
-        pizza[d]= data[d]
+@bp.route('/')
+class PostList(MethodView):
+    @bp.response(200, PostSchema)
+    def get (self, pizza_id):
+        return {"message": "pizza added", "pizza": pizza}
+    @bp.arguments(PostSchema)
+    def pizza(self, pizza_id):
+        data= request.get_json()
+        print (data)
+        for d in data: 
+            pizza[d]= data[d]
+
+    def delete(self, pizza_id):
+        data= request.delete_json()
+        print (data)
+        for d in data:
+            pizza [d]=data[d]
+
+# def pizzahome():
+#     return users, 200
+
+# @bp.route("/", methods=["POST"]) 
+
+# def createpizza():
+#     data= request.get_json()
+#     print (data)
+#     for d in data: 
+#         pizza[d]= data[d]
 
     ###pizza[] 
 
-    return {"message": "pizza added", "pizza": pizza}
+#     return {"message": "pizza added", "pizza": pizza}
 
-@app.delete("/")
+# @bp.delete("/")
 
-def delete():
-    return pizza, 200
+# def delete():
+#     return pizza, 200
 
-@app.route("/", methods= ["POST"])
+# @bp.route("/", methods= ["POST"])
 
-def delete_pizza():
-    data= request.delete_json()
-    print (data)
-    for d in data:
-        pizza [d]=data[d]
+# def delete_pizza():
+#     data= request.delete_json()
+#     print (data)
+#     for d in data:
+#         pizza [d]=data[d]
 
-    return {"message": "pizza deleted", "pizza": pizza}
+#     return {"message": "pizza deleted", "pizza": pizza}
 
-# @app.get ('/pizza')
+# @bp.get ('/pizza')
 # def get_pizza():
 #    return{ 'pizza': list(pizza.values()) }
 
-# @app.get ('/pizza/<pizza_id>')
+# @bp.get ('/pizza/<pizza_id>')
 # def get_pizza(pizza_id):
 #   try:
 #     return {'pizza': pizza[pizza_id]}, 200
@@ -48,7 +86,7 @@ def delete_pizza():
 #     return {'message': "Invalid Pizza"}, 400
   
 
-# @app.post('/pizza')
+# @bp.post('/pizza')
 # def create_pizza():
 #    pizza_data = request.get_json
 #    user_id = pizza_data['user_id']
@@ -57,7 +95,7 @@ def delete_pizza():
 #       return {'message': "Pizza Created" }, 201
 #    return{'message': "Invalid User"}, 401
 
-# @app.put('/pizza/<pizza_id>')
+# @bp.put('/pizza/<pizza_id>')
 # def update_pizza(pizza_id):
 #   try:
 #     pizza = pizza[pizza_id]
@@ -69,7 +107,7 @@ def delete_pizza():
 #   except: 
 #      return {'message': "Invalid Pizza Id"}, 400
    
-# @app.delete('/pizza/<pizza_id>')
+# @bp.delete('/pizza/<pizza_id>')
 # def delete_pizza(pizza_id):
 #   try: 
 #     del pizza [pizza_id]

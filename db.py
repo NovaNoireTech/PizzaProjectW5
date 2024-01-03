@@ -2,16 +2,20 @@ users = {
   '1': {
     'username': 'kedwards',
     'email' : 'kedwards@gmail.com'
+    # 'password': "secret"
   },
+
   '2' : {
     'username': 'kmassey',
     'email': 'kmassey@gmail.com'
+    # 'password': "secret" 
   },
+
   '3' : {
     'username': 'sglover',
     'email': 'sglover@gmail.com'
+    # 'password': "secret" 
   }
-
 }
 
 pizza = {
