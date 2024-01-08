@@ -1,8 +1,8 @@
-
+import os
 
 class Config:
 
-    #STOPPED HERER AT 1:14 SEC Day 3
+
     PROPAGATE_EXCEPTIONS = True
     API_TITLE= 'pizzaproject'
     API_VERSION = 'v1'
@@ -10,3 +10,4 @@ class Config:
     OPENAPI_URL_PREFIX ='/'
     OPENAPI_SWAGGER_UI_PATH= '/'
     OPENAPI_SWAGGER_UI_URL = 'https://cdn.jsdeliver.net/npm/swagger-ui-dist/'
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DB_URL")

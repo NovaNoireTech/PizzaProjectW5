@@ -8,7 +8,7 @@ class UserSchema(Schema):
     first_name = fields.Str()
     last_name = fields.Str()
 
-class PostSchema(Schema):
+class PizzaSchema(Schema):
     id = fields.Str (dump_only =True)
     body = fields.Str(required = True)
     timestamp = fields.DateTime(dump_only = True)

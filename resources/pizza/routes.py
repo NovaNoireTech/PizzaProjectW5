@@ -1,48 +1,63 @@
 from flask import request
 from uuid import uuid4
 from flask.views import MethodView
+from flask_smorest import abort
+from models.pizzamodel import pizzamodel
 
-from schemas import PostSchema
+from schemas import PizzaSchema
 
 from db import users, pizza
 from . import bp
 
 @bp.route('/<pizza_id>')
 class Pizza(MethodView):
-    @bp.response(200, PostSchema)
+
+    @bp.response(200, PizzaSchema)
     def get(self, pizza_id):
-        return {"message": "pizza added", "pizza": pizza}
+        post = pizzamodel.query.get(pizza_id)
+        if pizza:
+            return pizza
+        abort(400, message = 'Invalid Post')
 
-    def pizza(self, pizza_id):
-        data= request.get_json()
-        print (data)
-        for d in data: 
-            pizza[d]= data[d]
-    @bp.arguements(PostSchema)
-
+    @bp.arguements(PizzaSchema)
+    def put(self, pizza_data, pizza_id):
+        pizza = pizzamodel.query.get(pizza_id)
+        if pizza: 
+            pizza.body = pizza_data['toppings']
+            pizza.commit()
+        return {'message': "Invalid Pizza Id"}, 400
+    
     def delete(self, pizza_id):
-        data= request.delete_json()
-        print (data)
-        for d in data:
-            pizza [d]=data[d]
+        pizza = pizzamodel.query.get(pizza_id)
+        if pizza:
+            pizza.delete()
+            return {"message": "Pizza Deleted"}, 202
+        return {'message': "Invalid Pizza"}, 400
 
 @bp.route('/')
-class PostList(MethodView):
-    @bp.response(200, PostSchema)
-    def get (self, pizza_id):
-        return {"message": "pizza added", "pizza": pizza}
-    @bp.arguments(PostSchema)
-    def pizza(self, pizza_id):
-        data= request.get_json()
-        print (data)
-        for d in data: 
-            pizza[d]= data[d]
+class PizzaList(MethodView):
 
-    def delete(self, pizza_id):
-        data= request.delete_json()
-        print (data)
-        for d in data:
-            pizza [d]=data[d]
+    @bp.response(200, PizzaSchema(many = True))
+    def get (self):
+        return pizzamodel.query.all()
+    
+    @bp.arguments(PizzaSchema)
+    def pizza(self, pizza_data):
+        try:
+            pizza = pizzamodel()
+            pizza.user_id = pizza_data ['user_id']
+            pizza.body= pizza_data ['toppings']
+            pizza.commit()
+            return {'message': "Pizza Created" }, 201
+        except:
+            return {'message': "Invalid User"}, 401
+      
+
+    # def delete(self, pizza_id):
+    #     data= request.delete_json()
+    #     print (data)
+    #     for d in data:
+    #         pizza [d]=data[d]
 
 # def pizzahome():
 #     return users, 200
