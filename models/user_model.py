@@ -1,6 +1,15 @@
+from dataclasses import fields
+from datetime import datetime
 from app import db
 
 from werkzeug.security import generate_password_hash, check_password_hash
+
+from schemas import PizzaSchema, UserSchema
+
+followers = db.Table ('followers', 
+    db.Column('follower_id', db.Integer, db.ForeignKey('users.id'))
+    db.Column('follower_id', db.Integer, db.ForeignKey('users.id')))
+)
 
 class UserModel(db.Model):
 
@@ -12,6 +21,13 @@ class UserModel(db.Model):
     password_hash = db.Column(db.String(30), nullable = False)
     first_name = db.Column(db.String(30))
     last_name = db.Column(db.String(30))
+    followed = db.relationship ('UserModel', 
+                               secondary = 'followers'
+                               primaryjoin = followers.c.follower_id == id
+                               secondaryjoin = followers.c.followed_id, 
+                               backref = db.backref('followers', lazy = 'dynamic')
+                               )
+    # pizza = db.relationship(pizzamodel, backref='author', lazy='dynamic', cascade= 'all, delete')
     
     def __repr__(self):
         return f'<User: {self.username}>'
@@ -31,3 +47,5 @@ class UserModel(db.Model):
             else:
                     setattr(self, 'password_hash', generate_password_hash(v))
                     # self.password_hash = v
+    class UserSchemaNested(UserSchema):
+        user = fields.list(fields.Nested(PizzaSchema), dump_only = True)

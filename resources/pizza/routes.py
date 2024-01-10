@@ -2,30 +2,34 @@ from flask import request
 from uuid import uuid4
 from flask.views import MethodView
 from flask_smorest import abort
-from models.pizzamodel import pizzamodel
 
-from schemas import PizzaSchema
+from models import pizzamodel
+from schemas import PizzaSchema, PizzaSchemaNested
 
-from db import users, pizza
 from . import bp
+from resources import pizza
+
 
 @bp.route('/<pizza_id>')
 class Pizza(MethodView):
 
-    @bp.response(200, PizzaSchema)
+    @bp.response(200, PizzaSchemaNested)
     def get(self, pizza_id):
         post = pizzamodel.query.get(pizza_id)
         if pizza:
+            print(pizza.author)
             return pizza
-        abort(400, message = 'Invalid Post')
+        abort(400, message = 'Invalid Pizza')
 
     @bp.arguements(PizzaSchema)
     def put(self, pizza_data, pizza_id):
         pizza = pizzamodel.query.get(pizza_id)
         if pizza: 
-            pizza.body = pizza_data['toppings']
+            pizza.toppings = pizza_data['toppings']
             pizza.commit()
+            return {'message': 'pizza updated'}, 201
         return {'message': "Invalid Pizza Id"}, 400
+    
     
     def delete(self, pizza_id):
         pizza = pizzamodel.query.get(pizza_id)
@@ -46,7 +50,7 @@ class PizzaList(MethodView):
         try:
             pizza = pizzamodel()
             pizza.user_id = pizza_data ['user_id']
-            pizza.body= pizza_data ['toppings']
+            pizza.toppings= pizza_data ['toppings']
             pizza.commit()
             return {'message': "Pizza Created" }, 201
         except:

@@ -14,7 +14,7 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 from models.user_model import UserModel
-from models.pizzamodel import pizzamodel
+from models import pizzamodel
 
 from resources.users import bp as user_bp
 api.register_blueprint(user_bp)
